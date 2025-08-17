@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Users {
+  id         Int       @id @default(autoincrement())
+username String? @db.VarChar(50) @unique
+  email      String    @unique
+  xp         Int?
+  badges     String[]  
+  profileCompleteStatus Boolean @default(false)
+  created_at DateTime  @default(now()) @map("created_at")
+  avatar     String?
+
+
+  quizzes   Quizzes[]
+  attempts  Attempts[]
+}
+
+model Quizzes {
+  id                Int       @id @default(autoincrement())
+  title           String
+  user_id           Int
+  is_verified       Boolean
+  created_at        DateTime  @default(now())
+  time_alloted      Int
+  total_questions   Int?
+    share_url       String?
+    generated_slug_id String?
+
+  user      Users     @relation(fields: [user_id], references: [id])
+  questions Questions[]
+  attempts  Attempts[]
+}
+
+model badges {
+  id Int @id @default(autoincrement())
+    name        String  @unique
+  description String
+  image_url String?
+}
+
+model Questions {
+  id              Int      @id @default(autoincrement())
+  quiz_id         Int
+  question        String
+  options         String[] 
+  correct_answer  String
+
+  quiz            Quizzes    @relation(fields: [quiz_id], references: [id])
+  attemptAnswers  Attempt_answers[]
+}
+
+model Attempts {
+  id                         Int       @id @default(autoincrement())
+  user_id                    Int
+  quiz_id                    Int
+  score                      Int
+  total_questions_attempted  Int
+  status                     Boolean
+   created_at               DateTime  @default(now())  // ← THIS MUST EXIST
+
+  user             Users      @relation(fields: [user_id], references: [id])
+  quiz             Quizzes    @relation(fields: [quiz_id], references: [id])
+  attemptAnswers   Attempt_answers[]
+}
+
+model Attempt_answers {
+  id              Int       @id @default(autoincrement())
+  question_id     Int
+  attempt_id      Int
+  selected_answer String
+  is_correct      Boolean
+
+  question  Questions  @relation(fields: [question_id], references: [id])
+  attempt   Attempts   @relation(fields: [attempt_id], references: [id])
+}
