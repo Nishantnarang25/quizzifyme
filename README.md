@@ -26,3 +26,31 @@
 1. **Clone the repo**:  
    ```bash
    git clone https://github.com/your-repo/quizzify-me.git
+
+2. Install dependencies
+   ```bash
+   # Install client dependencies
+   cd client && npm install
+
+   # Install server dependencies
+   cd ../server && npm install
+
+3. Configure environment variables
+     
+   Create these files with the following content:
+   
+   client/.env
+   ```bash 
+  
+   VITE_CLIENT_ID=
+   VITE_CLIENT_SECRET=
+   VITE_SERVER_URL=
+
+   ```
+
+  server/.env
+  ```bash
+  DATABASE_URL=your-postgres-url
+  JWT_SECRET=your-secret-key
+
+  ```
